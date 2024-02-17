@@ -1,9 +1,19 @@
 const TelegramApi = require('node-telegram-bot-api');
 const fetch = require('node-fetch');
-const { options } = require('./options.js');
 
 const token = '6956492176:AAE2U3iAc5Cjqt8W9ddERml-56k04N830yE';
 const bot = new TelegramApi(token, {polling: true});
+
+const options = {
+  reply_markup: JSON.stringify({
+    inline_keyboard: [
+      [
+        { text: 'currency', callback_data: 'currency' },
+        { text: 'convert', callback_data: 'convert' }
+      ]
+    ]
+  })
+}
 
 // Глобальная переменная для хранения кэшированных данных
 let cachedCurrencyData;
@@ -103,7 +113,7 @@ async function handleCallbackQuery(msg) {
             // Получаем текущий курс выбранной валюты
             const currencyData = await getCurrencies();
             const targetRate = currencyData[currencyCode];
-            console.log(currencyData);
+
             if (!targetRate) {
                 bot.sendMessage(chatId, 'Данные о курсе указанной валюты не найдены.');
             }
